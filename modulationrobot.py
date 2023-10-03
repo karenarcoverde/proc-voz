@@ -1,8 +1,9 @@
 import numpy as np
 import sounddevice as sd
 import librosa
+import soundfile as sf
 
-def robotize_voice_by_removing_phase(input_path):
+def robotize_voice_by_removing_phase(input_path, output_path):
     y, sr = librosa.load(input_path, sr=None)
     
     # Calcula a transformada de Fourier de curta duração
@@ -13,7 +14,8 @@ def robotize_voice_by_removing_phase(input_path):
     
     # Reconstrói o sinal usando somente a magnitude (fase zero)
     y_no_phase = librosa.istft(magnitude)
-    
+    # Salva o áudio resultante em um arquivo
+    sf.write(output_path, y_no_phase, sr)
     # Reproduzindo o áudio usando sounddevice
     sd.play(y_no_phase, sr)
     
@@ -21,7 +23,8 @@ def robotize_voice_by_removing_phase(input_path):
     sd.wait()
 
 input_audio_file = "Patinho.wav"
-robotize_voice_by_removing_phase(input_audio_file)
+output_audio_file = "Patinho_robotizado.wav"
+robotize_voice_by_removing_phase(input_audio_file, output_audio_file)
 
 
 
